@@ -20,7 +20,6 @@ from datetime import datetime
 
 import psutil
 import requests
-import speedtest
 
 
 # ── Config ──────────────────────────────────────────────────────────────────
@@ -100,21 +99,25 @@ def get_public_ip():
 
 
 def run_speedtest():
-    """Run Ookla speedtest, return dict with results."""
+    """Run Ookla Speedtest using the official CLI binary."""
     print("  Running speed test...")
     try:
-        st = speedtest.Speedtest()
-        st.get_best_server()
-        st.download()
-        st.upload()
-        results = st.results.dict()
+        result = subprocess.run(
+            ["speedtest", "--format=json", "--accept-license"],
+            capture_output=True, text=True, timeout=120
+        )
+        if result.returncode != 0:
+            raise RuntimeError(result.stderr.strip() or "speedtest command failed")
+        data = json.loads(result.stdout)
         return {
-            "ping_ms": round(results["ping"], 2),
-            "download_mbps": round(results["download"] / 1_000_000, 2),
-            "upload_mbps": round(results["upload"] / 1_000_000, 2),
-            # speedtest-cli doesn't provide jitter directly; we'll get it from ping test
-            "jitter_ms": 0,
+            "ping_ms": round(data["ping"]["latency"], 2),
+            "download_mbps": round(data["download"]["bandwidth"] * 8 / 1_000_000, 2),
+            "upload_mbps": round(data["upload"]["bandwidth"] * 8 / 1_000_000, 2),
+            "jitter_ms": round(data["ping"].get("jitter", 0), 2),
         }
+    except FileNotFoundError:
+        print("  [!] 'speedtest' CLI not found. Install from https://www.speedtest.net/apps/cli")
+        return {"ping_ms": -1, "download_mbps": -1, "upload_mbps": -1, "jitter_ms": -1}
     except Exception as e:
         print(f"  [!] Speed test failed: {e}")
         return {"ping_ms": -1, "download_mbps": -1, "upload_mbps": -1, "jitter_ms": -1}

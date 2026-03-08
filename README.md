@@ -13,6 +13,27 @@ source venv/bin/activate        # Linux/Mac
 pip install -r requirements.txt
 ```
 
+### Speedtest CLI (required)
+
+The script uses Ookla's official Speedtest CLI (not the old `speedtest-cli` pip package, which is broken). Install it:
+
+```bash
+# Linux (Debian/Ubuntu)
+sudo apt install curl
+curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
+sudo apt install speedtest
+
+# macOS
+brew tap teamookla/speedtest
+brew install speedtest
+
+# Windows
+# Download from https://www.speedtest.net/apps/cli
+# Extract and add to PATH, or place speedtest.exe in the project folder
+```
+
+Verify it works: `speedtest --version`
+
 ### Torrent test (optional)
 
 The torrent test requires `aria2c`, a lightweight command-line torrent client. Install it if you want to test P2P performance:
