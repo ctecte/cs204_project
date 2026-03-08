@@ -29,7 +29,7 @@ BASELINE_FILE = "baseline.json"
 SPEEDTEST_ITERATIONS = 3
 PING_TARGET = "8.8.8.8"
 PING_COUNT = 30
-TEST_FILE_URL = "https://speed.hetzner.de/100MB.bin"
+TEST_FILE_URL = "https://proof.ovh.net/files/100Mb.dat"
 TEST_FILE_SIZE_MB = 100
 IP_CHECK_URL = "https://api.ipify.org?format=json"
 DNS_CHECK_DOMAINS = ["google.com", "facebook.com", "amazon.com"]
