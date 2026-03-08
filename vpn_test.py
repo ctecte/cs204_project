@@ -33,6 +33,10 @@ TEST_FILE_URL = "https://speed.hetzner.de/100MB.bin"
 TEST_FILE_SIZE_MB = 100
 IP_CHECK_URL = "https://api.ipify.org?format=json"
 DNS_CHECK_DOMAINS = ["google.com", "facebook.com", "amazon.com"]
+# Legal torrent for testing (Ubuntu ISO)
+TORRENT_MAGNET = "magnet:?xt=urn:btih:d49194004eb92f1b93bc83557e3913763bfb2c70&dn=ubuntu-24.04.2-desktop-amd64.iso"
+TORRENT_TIMEOUT = 120  # seconds to download before stopping
+TORRENT_DIR = "torrent_test_tmp"
 # Known public DNS servers (if your DNS resolves to one of these while on VPN, it may be leaking)
 PUBLIC_DNS_SERVERS = {
     "8.8.8.8", "8.8.4.4",           # Google
@@ -49,6 +53,7 @@ CSV_HEADERS = [
     "avg_latency_ms", "min_latency_ms", "max_latency_ms", "packet_loss_pct",
     "dns_leak", "ip_leak", "public_ip",
     "vpn_cpu_pct", "vpn_ram_mb",
+    "torrent_download_speed_mbps", "torrent_peers", "torrent_blocked",
 ]
 
 
@@ -271,6 +276,114 @@ def get_vpn_process_usage():
     }
 
 
+def run_torrent_test():
+    """Download a legal torrent (Ubuntu ISO) for a fixed duration and measure speed."""
+    print(f"  Running torrent test ({TORRENT_TIMEOUT}s)...")
+
+    # Check if aria2c is installed
+    try:
+        subprocess.run(["aria2c", "--version"], capture_output=True, timeout=5)
+    except FileNotFoundError:
+        print("  [!] aria2c not installed. Skipping torrent test.")
+        print("      Install: sudo apt install aria2  (Linux) / choco install aria2  (Windows)")
+        return {"torrent_download_speed_mbps": -1, "torrent_peers": -1, "torrent_blocked": "skipped"}
+
+    # Clean up any previous test files
+    if os.path.exists(TORRENT_DIR):
+        import shutil
+        shutil.rmtree(TORRENT_DIR)
+    os.makedirs(TORRENT_DIR, exist_ok=True)
+
+    try:
+        proc = subprocess.Popen(
+            [
+                "aria2c",
+                TORRENT_MAGNET,
+                "--dir", TORRENT_DIR,
+                "--seed-time=0",           # don't seed after download
+                "--max-upload-limit=1K",   # minimize upload during test
+                "--summary-interval=5",    # log every 5 seconds
+                "--bt-stop-timeout=30",    # stop if no peers after 30s
+                "--allow-overwrite=true",
+                "--console-log-level=notice",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+
+        output_lines = []
+        start_time = time.time()
+        total_bytes = 0
+        max_peers = 0
+
+        while time.time() - start_time < TORRENT_TIMEOUT:
+            line = proc.stdout.readline()
+            if not line:
+                break
+            output_lines.append(line.strip())
+
+            # Parse download progress from aria2c output
+            # Lines look like: [#abc123 45MiB/4.7GiB(0%) CN:12 DL:5.2MiB ...]
+            if "DL:" in line:
+                try:
+                    dl_part = line.split("DL:")[1].split()[0]
+                    # Parse speed value (e.g., "5.2MiB" or "800KiB")
+                    # We just need the final stats, but track peers
+                    if "CN:" in line:
+                        cn_part = line.split("CN:")[1].split()[0]
+                        peers = int(cn_part)
+                        max_peers = max(max_peers, peers)
+                except (IndexError, ValueError):
+                    pass
+
+            # Check for completed download size
+            if "SEED" in line or "seeding" in line.lower():
+                break
+
+        # Kill the process after timeout
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+
+        elapsed = time.time() - start_time
+
+        # Calculate total bytes downloaded by checking file sizes
+        for root, dirs, files in os.walk(TORRENT_DIR):
+            for f in files:
+                fpath = os.path.join(root, f)
+                if os.path.exists(fpath):
+                    total_bytes += os.path.getsize(fpath)
+
+        if total_bytes == 0:
+            # No data downloaded - likely blocked
+            print("  [!] No torrent data received. P2P may be blocked by this VPN.")
+            return {"torrent_download_speed_mbps": 0, "torrent_peers": 0, "torrent_blocked": "yes"}
+
+        speed_mbps = round((total_bytes * 8) / (elapsed * 1_000_000), 2)
+        downloaded_mb = round(total_bytes / (1024 * 1024), 1)
+
+        print(f"  Torrent: {downloaded_mb}MB in {round(elapsed, 1)}s "
+              f"({speed_mbps} Mbps), max peers: {max_peers}")
+
+        return {
+            "torrent_download_speed_mbps": speed_mbps,
+            "torrent_peers": max_peers,
+            "torrent_blocked": "no",
+        }
+
+    except Exception as e:
+        print(f"  [!] Torrent test failed: {e}")
+        return {"torrent_download_speed_mbps": -1, "torrent_peers": -1, "torrent_blocked": "error"}
+    finally:
+        # Clean up downloaded files
+        if os.path.exists(TORRENT_DIR):
+            import shutil
+            shutil.rmtree(TORRENT_DIR, ignore_errors=True)
+
+
 # ── Main ────────────────────────────────────────────────────────────────────
 def run_baseline():
     """Run baseline measurements without VPN."""
@@ -318,13 +431,16 @@ def run_baseline():
         "public_ip": ip,
         "vpn_cpu_pct": 0,
         "vpn_ram_mb": 0,
+        "torrent_download_speed_mbps": "n/a",
+        "torrent_peers": "n/a",
+        "torrent_blocked": "n/a",
     }
     append_row(row)
     print(f"  Results logged to {RESULTS_FILE}")
     print("\n═══ Baseline Complete ═══\n")
 
 
-def run_vpn_test(vpn_name, location, time_of_day, iterations=SPEEDTEST_ITERATIONS):
+def run_vpn_test(vpn_name, location, time_of_day, iterations=SPEEDTEST_ITERATIONS, torrent=False):
     """Run full test suite for a VPN."""
     baseline = load_baseline()
     baseline_ip = baseline.get("ip") if baseline else None
@@ -372,6 +488,11 @@ def run_vpn_test(vpn_name, location, time_of_day, iterations=SPEEDTEST_ITERATION
         print(f"  File download: {dl_results['file_download_time_s']}s "
               f"({dl_results['file_download_speed_mbps']} Mbps)")
 
+        # Torrent test (only on first iteration to save time, unless you want every iteration)
+        torrent_results = {"torrent_download_speed_mbps": "n/a", "torrent_peers": "n/a", "torrent_blocked": "n/a"}
+        if torrent and i == 1:
+            torrent_results = run_torrent_test()
+
         row = {
             "timestamp": datetime.now().isoformat(),
             "vpn_name": vpn_name,
@@ -385,6 +506,7 @@ def run_vpn_test(vpn_name, location, time_of_day, iterations=SPEEDTEST_ITERATION
             "ip_leak": ip_leak,
             "public_ip": current_ip,
             **usage,
+            **torrent_results,
         }
         append_row(row)
 
@@ -399,19 +521,21 @@ def main():
     parser.add_argument("--time", type=str, default="off-peak", help="Time of day (e.g., 'peak', 'off-peak')")
     parser.add_argument("--baseline", action="store_true", help="Run baseline test (no VPN)")
     parser.add_argument("--iterations", type=int, default=SPEEDTEST_ITERATIONS, help="Number of speed test iterations")
+    parser.add_argument("--torrent", action="store_true", help="Include torrent download test (requires aria2c)")
 
     args = parser.parse_args()
 
     if args.baseline:
         run_baseline()
     elif args.vpn:
-        run_vpn_test(args.vpn, args.location, args.time, args.iterations)
+        run_vpn_test(args.vpn, args.location, args.time, args.iterations, args.torrent)
     else:
         parser.print_help()
         print("\nExamples:")
         print('  python vpn_test.py --baseline')
         print('  python vpn_test.py --vpn "ProtonVPN" --location "nearest" --time "peak"')
         print('  python vpn_test.py --vpn "Windscribe" --location "US-East" --time "off-peak" --iterations 5')
+        print('  python vpn_test.py --vpn "ProtonVPN" --location "nearest" --time "peak" --torrent')
 
 
 if __name__ == "__main__":
