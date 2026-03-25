@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 results.json
 yt_test_tmp/
+cookies.txt

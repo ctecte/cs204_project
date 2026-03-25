@@ -74,7 +74,7 @@ def run_ytdlp_download():
                 "-o", output_template,
                 "--no-playlist",
                 "--newline",
-                "--cookies-from-browser", "chrome",
+                "--cookies", "cookies.txt",
                 YT_VIDEO_URL,
             ],
             capture_output=True, text=True, timeout=300,
