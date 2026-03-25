@@ -17,6 +17,7 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 
 
 # YouTube video for real-world download test
@@ -134,19 +135,28 @@ def main():
     print(f"  3. yt-dlp Download:   {yt_speed_mbps or 'N/A'} Mbps ({yt_size_mb or '?'} MB)")
     print()
 
-    # Save results to a simple JSON file for easy comparison
-    results = {
+    # Append results to a single JSON file
+    result = {
         "label": label,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "download_mbps": download_mbps,
         "upload_mbps": upload_mbps,
         "ytdlp_speed_mbps": yt_speed_mbps,
         "ytdlp_size_mb": yt_size_mb,
     }
 
-    filename = f"results_{label.lower().replace(' ', '_')}.json"
-    with open(filename, "w") as f:
-        json.dump(results, f, indent=2)
-    print(f"  Saved to {filename}")
+    results_file = "results.json"
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
+            all_results = json.load(f)
+    else:
+        all_results = []
+
+    all_results.append(result)
+
+    with open(results_file, "w") as f:
+        json.dump(all_results, f, indent=2)
+    print(f"  Appended to {results_file} ({len(all_results)} total runs)")
     print()
 
 
