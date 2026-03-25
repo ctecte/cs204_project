@@ -37,6 +37,32 @@ pip install speedtest-cli
 > Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 > ```
 
+### Deno (required for yt-dlp)
+
+yt-dlp needs Deno to solve YouTube's JavaScript challenges. Install it:
+
+```powershell
+# Windows (PowerShell)
+irm https://deno.land/install.ps1 | iex
+```
+
+```bash
+# Linux / Mac
+curl -fsSL https://deno.land/install.sh | sh
+```
+
+### YouTube Cookies (required for yt-dlp)
+
+YouTube blocks requests from VPN IPs unless you're authenticated. Export your cookies:
+
+1. Install the Chrome extension [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+2. Go to `youtube.com` (make sure you're logged in)
+3. Click the extension and export cookies
+4. Save the file as `cookies.txt` in the `cs204_project` folder
+5. Make sure the file is saved with **UTF-8** encoding (not UTF-16)
+
+> **Do not commit cookies.txt** — it contains your login session. It's already in `.gitignore`.
+
 ## Usage
 
 ### 1. Test without VPN
