@@ -1,6 +1,5 @@
 venv/
 __pycache__/
 *.pyc
-results.csv
-baseline.json
-torrent_test_tmp/
+results_*.json
+yt_test_tmp/
