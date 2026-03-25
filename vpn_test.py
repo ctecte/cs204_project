@@ -75,6 +75,7 @@ def run_ytdlp_download():
                 "--no-playlist",
                 "--newline",
                 "--cookies", "cookies.txt",
+                "--remote-components", "ejs:github",
                 YT_VIDEO_URL,
             ],
             capture_output=True, text=True, timeout=300,
