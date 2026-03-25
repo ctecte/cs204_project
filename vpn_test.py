@@ -81,7 +81,15 @@ def run_ytdlp_download():
         elapsed = time.time() - start
 
         if result.returncode != 0:
-            print(f"  [!] yt-dlp failed: {result.stderr.strip()[:200]}")
+            print(f"  [!] yt-dlp failed (exit code {result.returncode}):")
+            if result.stderr:
+                print(f"  STDERR: {result.stderr.strip()}")
+            if result.stdout:
+                # Print last few lines of stdout for context
+                last_lines = result.stdout.strip().splitlines()[-10:]
+                print(f"  STDOUT (last lines):")
+                for line in last_lines:
+                    print(f"    {line}")
             return None, None
 
         # Calculate total file size downloaded
