@@ -14,6 +14,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -57,6 +58,15 @@ def run_speedtest():
         return None, None
 
 
+def print_progress_bar(percent, speed="", eta="", width=30):
+    """Print a progress bar that updates in place."""
+    filled = int(width * percent / 100)
+    bar = "█" * filled + "░" * (width - filled)
+    info = f"{speed} ETA {eta}" if speed and eta else ""
+    sys.stdout.write(f"\r  [{bar}] {percent:5.1f}% {info}  ")
+    sys.stdout.flush()
+
+
 def run_ytdlp_download():
     """Download a YouTube video with yt-dlp and measure throughput."""
     print("\n── yt-dlp Video Download ──")
@@ -65,9 +75,14 @@ def run_ytdlp_download():
     os.makedirs(YT_OUTPUT_DIR, exist_ok=True)
     output_template = os.path.join(YT_OUTPUT_DIR, "%(title)s.%(ext)s")
 
+    # Matches yt-dlp progress lines like: [download]  45.2% of 10.00MiB at 1.50MiB/s ETA 00:05
+    progress_re = re.compile(
+        r"\[download\]\s+([\d.]+)%\s+of\s+\S+\s+at\s+(\S+)\s+ETA\s+(\S+)"
+    )
+
     try:
         start = time.time()
-        result = subprocess.run(
+        proc = subprocess.Popen(
             [
                 "yt-dlp",
                 "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
@@ -78,20 +93,33 @@ def run_ytdlp_download():
                 "--remote-components", "ejs:github",
                 YT_VIDEO_URL,
             ],
-            capture_output=True, text=True, timeout=300,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
         )
+
+        stderr_lines = []
+        for line in proc.stdout:
+            line = line.rstrip()
+            m = progress_re.search(line)
+            if m:
+                print_progress_bar(float(m.group(1)), m.group(2), m.group(3))
+            elif "[download] 100%" in line:
+                print_progress_bar(100.0)
+            else:
+                stderr_lines.append(line)
+
+        proc.wait(timeout=300)
         elapsed = time.time() - start
 
-        if result.returncode != 0:
-            print(f"  [!] yt-dlp failed (exit code {result.returncode}):")
-            if result.stderr:
-                print(f"  STDERR: {result.stderr.strip()}")
-            if result.stdout:
-                # Print last few lines of stdout for context
-                last_lines = result.stdout.strip().splitlines()[-10:]
-                print(f"  STDOUT (last lines):")
-                for line in last_lines:
-                    print(f"    {line}")
+        # Clear the progress bar line
+        sys.stdout.write("\r" + " " * 80 + "\r")
+        sys.stdout.flush()
+
+        if proc.returncode != 0:
+            print(f"  [!] yt-dlp failed (exit code {proc.returncode}):")
+            for line in stderr_lines[-10:]:
+                print(f"    {line}")
             return None, None
 
         # Calculate total file size downloaded
