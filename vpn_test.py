@@ -27,8 +27,35 @@ YT_OUTPUT_DIR = "yt_test_tmp"
 
 
 def run_speedtest():
-    """Run speedtest-cli and return download/upload in Mbps."""
-    print("\n── Speed Test (speedtest-cli) ──")
+    """Run Ookla speedtest CLI and return download/upload in Mbps.
+
+    Tries the official Ookla 'speedtest' first, falls back to 'speedtest-cli'.
+    """
+    print("\n── Speed Test ──")
+
+    # Try official Ookla CLI first (more reliable, not blocked by 403s)
+    try:
+        result = subprocess.run(
+            ["speedtest", "--format=json", "--accept-license"],
+            capture_output=True, text=True, timeout=120,
+        )
+        if result.returncode == 0:
+            data = json.loads(result.stdout)
+            # Ookla CLI returns bytes per second
+            download = round(data["download"]["bandwidth"] * 8 / 1_000_000, 2)
+            upload = round(data["upload"]["bandwidth"] * 8 / 1_000_000, 2)
+            ping = round(data["ping"]["latency"], 1)
+
+            print(f"  Download: {download} Mbps")
+            print(f"  Upload:   {upload} Mbps")
+            print(f"  Ping:     {ping} ms")
+            return download, upload
+    except FileNotFoundError:
+        pass  # Fall through to speedtest-cli
+    except Exception as e:
+        print(f"  [!] Ookla speedtest error: {e}, trying speedtest-cli...")
+
+    # Fallback: speedtest-cli (Python package, sometimes gets 403'd)
     try:
         result = subprocess.run(
             ["speedtest-cli", "--json"],
@@ -36,10 +63,12 @@ def run_speedtest():
         )
         if result.returncode != 0:
             print(f"  [!] speedtest failed: {result.stderr.strip()}")
+            print("      The Python speedtest-cli is often blocked (403).")
+            print("      Install the official Ookla CLI instead:")
+            print("      https://www.speedtest.net/apps/cli")
             return None, None
 
         data = json.loads(result.stdout)
-        # speedtest-cli returns bits per second
         download = round(data["download"] / 1_000_000, 2)
         upload = round(data["upload"] / 1_000_000, 2)
         ping = round(data["ping"], 1)
@@ -50,8 +79,9 @@ def run_speedtest():
         return download, upload
 
     except FileNotFoundError:
-        print("  [!] 'speedtest-cli' not found.")
-        print("      Install: pip install speedtest-cli")
+        print("  [!] No speedtest tool found.")
+        print("      Install the official Ookla CLI: https://www.speedtest.net/apps/cli")
+        print("      Or: pip install speedtest-cli")
         return None, None
     except Exception as e:
         print(f"  [!] Speed test error: {e}")
@@ -75,9 +105,11 @@ def run_ytdlp_download():
     os.makedirs(YT_OUTPUT_DIR, exist_ok=True)
     output_template = os.path.join(YT_OUTPUT_DIR, "%(title)s.%(ext)s")
 
-    # Matches yt-dlp progress lines like: [download]  45.2% of 10.00MiB at 1.50MiB/s ETA 00:05
+    # Matches yt-dlp progress lines like:
+    #   [download]  45.2% of 10.00MiB at 1.50MiB/s ETA 00:05
+    #   [download]  45.2% of 10.00MiB at  Unknown B/s ETA Unknown
     progress_re = re.compile(
-        r"\[download\]\s+([\d.]+)%\s+of\s+\S+\s+at\s+(\S+)\s+ETA\s+(\S+)"
+        r"\[download\]\s+([\d.]+)%\s+of\s+\S+\s+at\s+(.+?)\s+ETA\s+(\S+)"
     )
 
     try:
@@ -98,7 +130,7 @@ def run_ytdlp_download():
             text=True,
         )
 
-        stderr_lines = []
+        error_lines = []
         for line in proc.stdout:
             line = line.rstrip()
             m = progress_re.search(line)
@@ -106,8 +138,9 @@ def run_ytdlp_download():
                 print_progress_bar(float(m.group(1)), m.group(2), m.group(3))
             elif "[download] 100%" in line:
                 print_progress_bar(100.0)
-            else:
-                stderr_lines.append(line)
+            elif line:
+                # Keep non-progress lines — these contain actual errors/info
+                error_lines.append(line)
 
         proc.wait(timeout=300)
         elapsed = time.time() - start
@@ -118,7 +151,10 @@ def run_ytdlp_download():
 
         if proc.returncode != 0:
             print(f"  [!] yt-dlp failed (exit code {proc.returncode}):")
-            for line in stderr_lines[-10:]:
+            # Show only actual error lines, not progress duplicates
+            real_errors = [l for l in error_lines if not l.startswith("[download]")]
+            display = real_errors[-10:] if real_errors else error_lines[-10:]
+            for line in display:
                 print(f"    {line}")
             return None, None
 
