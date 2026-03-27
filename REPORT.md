@@ -8,7 +8,7 @@ We measured three metrics to compare network performance with and without a VPN:
 
 1. **Download Speed** (Mbps) -- via `speedtest-cli` (Ookla)
 2. **Upload Speed** (Mbps) -- via `speedtest-cli` (Ookla)
-3. **Real-World Download** (Mbps) -- downloading a 709 MB YouTube video with `yt-dlp`
+3. **Real-World Download** (Mbps) -- downloading a 709 MB YouTube 4K Big Bucks Bunny video with `yt-dlp`
 
 Each VPN was tested on multiple server locations. Tests were run from Singapore on a gigabit fibre connection.
 
