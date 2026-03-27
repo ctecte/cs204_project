@@ -1,0 +1,226 @@
+[
+  {
+    "label": "No VPN",
+    "timestamp": "2026-03-25 12:29:48",
+    "download_mbps": 915.55,
+    "upload_mbps": 795.41,
+    "ytdlp_speed_mbps": 124.26,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - Singapore 1230pm",
+    "timestamp": "2026-03-25 12:31:23",
+    "download_mbps": 428.0,
+    "upload_mbps": 84.59,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - Singapore 1230pm",
+    "timestamp": "2026-03-25 12:35:54",
+    "download_mbps": 421.9,
+    "upload_mbps": 82.0,
+    "ytdlp_speed_mbps": 125.01,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - Canada 1230pm",
+    "timestamp": "2026-03-25 12:37:20",
+    "download_mbps": 15.57,
+    "upload_mbps": 12.48,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - switzerland 1230pm",
+    "timestamp": "2026-03-25 12:48:57",
+    "download_mbps": 66.76,
+    "upload_mbps": 12.49,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - canada 1250pm",
+    "timestamp": "2026-03-25 12:51:17",
+    "download_mbps": 33.75,
+    "upload_mbps": 12.57,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - singapore 1250pm",
+    "timestamp": "2026-03-25 12:56:04",
+    "download_mbps": 380.58,
+    "upload_mbps": 83.03,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - singapore 1250pm",
+    "timestamp": "2026-03-25 12:57:45",
+    "download_mbps": 425.88,
+    "upload_mbps": 85.82,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - Japan 1250pm",
+    "timestamp": "2026-03-25 12:59:28",
+    "download_mbps": 289.21,
+    "upload_mbps": 43.63,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - Japan 1250pm",
+    "timestamp": "2026-03-25 13:00:04",
+    "download_mbps": 316.86,
+    "upload_mbps": 44.12,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - Japan 1pm",
+    "timestamp": "2026-03-25 13:10:02",
+    "download_mbps": 301.34,
+    "upload_mbps": 46.29,
+    "ytdlp_speed_mbps": 115.27,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - United States 1:10pm",
+    "timestamp": "2026-03-25 13:12:02",
+    "download_mbps": 59.42,
+    "upload_mbps": 11.25,
+    "ytdlp_speed_mbps": 95.86,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - Netherlands 1:12pm",
+    "timestamp": "2026-03-25 13:13:57",
+    "download_mbps": 130.4,
+    "upload_mbps": 15.51,
+    "ytdlp_speed_mbps": 91.81,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - United States 1:15pm",
+    "timestamp": "2026-03-25 13:17:22",
+    "download_mbps": 101.49,
+    "upload_mbps": 15.96,
+    "ytdlp_speed_mbps": 94.95,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - Japan 26/3/2026 9:37pm",
+    "timestamp": "2026-03-26 21:37:05",
+    "download_mbps": null,
+    "upload_mbps": null,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "Proton - Japan 26/3/2026 9:37pm",
+    "timestamp": "2026-03-26 21:39:05",
+    "download_mbps": 304.41,
+    "upload_mbps": 43.0,
+    "ytdlp_speed_mbps": 90.33,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - United States 26/3/2026 9:39pm",
+    "timestamp": "2026-03-26 21:41:35",
+    "download_mbps": 20.61,
+    "upload_mbps": 1.57,
+    "ytdlp_speed_mbps": 74.24,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Proton - Japan 26/3/2026 9:41pm",
+    "timestamp": "2026-03-26 21:43:45",
+    "download_mbps": 298.21,
+    "upload_mbps": 44.08,
+    "ytdlp_speed_mbps": 72.12,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Cloudflare - Singapore 26/3/2026 9:59pm",
+    "timestamp": "2026-03-26 22:02:25",
+    "download_mbps": 174.57,
+    "upload_mbps": 32.97,
+    "ytdlp_speed_mbps": 41.75,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Windscribe - Canada (best location) 26/3/2026 11:22pm",
+    "timestamp": "2026-03-26 23:24:48",
+    "download_mbps": 317.22,
+    "upload_mbps": 103.9,
+    "ytdlp_speed_mbps": 68.93,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Windscribe - United States Peachtree 26/3/2026",
+    "timestamp": "2026-03-26 23:32:02",
+    "download_mbps": 52.51,
+    "upload_mbps": 13.11,
+    "ytdlp_speed_mbps": 30.41,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - Mumbai 27/3/2026",
+    "timestamp": "2026-03-27 22:45:57",
+    "download_mbps": 27.25,
+    "upload_mbps": 9.14,
+    "ytdlp_speed_mbps": 54.17,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - United States LA 27/3/2026",
+    "timestamp": "2026-03-27 22:58:29",
+    "download_mbps": 118.55,
+    "upload_mbps": 18.67,
+    "ytdlp_speed_mbps": 96.16,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - Canada Montreal 27/3/2026",
+    "timestamp": "2026-03-27 23:00:20",
+    "download_mbps": 38.43,
+    "upload_mbps": 13.05,
+    "ytdlp_speed_mbps": 96.07,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - Mumbai 27/3/2026",
+    "timestamp": "2026-03-27 23:02:36",
+    "download_mbps": null,
+    "upload_mbps": null,
+    "ytdlp_speed_mbps": 100.87,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "TunnelBear - Singapore (best) 27/3/2026",
+    "timestamp": "2026-03-27 23:04:28",
+    "download_mbps": null,
+    "upload_mbps": null,
+    "ytdlp_speed_mbps": null,
+    "ytdlp_size_mb": null
+  },
+  {
+    "label": "TunnelBear - Singapore (best) 27/3/2026",
+    "timestamp": "2026-03-27 23:08:02",
+    "download_mbps": 677.86,
+    "upload_mbps": 452.37,
+    "ytdlp_speed_mbps": 106.07,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "TunnelBear - Singapore (best) 27/3/2026",
+    "timestamp": "2026-03-27 23:09:47",
+    "download_mbps": 694.46,
+    "upload_mbps": 416.12,
+    "ytdlp_speed_mbps": 91.94,
+    "ytdlp_size_mb": 708.96
+  }
+]
