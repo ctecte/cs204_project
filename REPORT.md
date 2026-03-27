@@ -107,6 +107,28 @@ WARP performed the worst for yt-dlp downloads despite being a nearby server. WAR
 
 ---
 
+## Peak Hour Congestion
+
+| Server | Time (SGT) | Download (Mbps) | Upload (Mbps) | yt-dlp (Mbps) | Notes |
+|--------|-----------|----------------:|--------------:|--------------:|-------|
+| Proton Japan | Mar 25 ~1pm (midday) | 301 | 46 | 115 | Off-peak Japan |
+| Proton Japan | Mar 26 ~9:40pm (evening) | 298–304 | 43–44 | 72–90 | **yt-dlp dropped 25-35%** |
+| Proton US | Mar 25 ~1:15pm (1am EST) | 59–101 | 11–16 | 95 | US off-peak |
+| Proton US | Mar 26 ~9:41pm (9:41am EST) | **20.6** | **1.57** | 74 | **DL dropped ~70%** |
+| Proton Singapore | Mar 25 ~12:30-1pm | 380–428 | 83–86 | 125 | Stable |
+
+Raw bandwidth on Japan stayed flat (~300 Mbps) but yt-dlp dropped — YouTube CDN congestion, not the tunnel. US servers got hit hardest during business hours. Singapore stayed consistent due to proximity.
+
+### Why Speedtest Stays Stable but YouTube Drops
+
+Speedtest measures short-burst tunnel capacity to a nearby server. YouTube measures end-to-end throughput through Google's CDN — fundamentally different congestion points. Three factors compound during peak hours:
+
+1. **CDN congestion:** Japan's internet exchange points (JPNAP, JPIX) see 2-3x daytime traffic levels between 8pm-midnight JST. YouTube accounts for 15-25% of that evening traffic, saturating Google's local cache nodes and forcing fallback to more distant CDN edges.
+2. **VPN IP deprioritisation:** Google detects VPN/datacenter exit IPs and routes them to suboptimal CDN nodes. During peak hours, even those fallback nodes get congested.
+3. **Shared exit IP throttling:** Multiple free-tier VPN users share the same exit IP. YouTube applies per-IP rate limits — more concurrent users at peak means a smaller slice each. This explains the 70% drop on Proton US: their US free servers are the most popular globally, so business hours = maximum contention.
+
+---
+
 ## Conclusions
 
 ### Best Free VPN for Performance: ProtonVPN

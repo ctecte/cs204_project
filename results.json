@@ -222,5 +222,77 @@
     "upload_mbps": 416.12,
     "ytdlp_speed_mbps": 91.94,
     "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "No VPN (evening baseline)",
+    "timestamp": "2026-03-26 21:30:12",
+    "download_mbps": 901.23,
+    "upload_mbps": 788.45,
+    "ytdlp_speed_mbps": 138.71,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "TunnelBear - Singapore (best) 25/3/2026 1:30pm",
+    "timestamp": "2026-03-25 13:30:15",
+    "download_mbps": 712.33,
+    "upload_mbps": 468.91,
+    "ytdlp_speed_mbps": 118.42,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "TunnelBear - Singapore (best) 25/3/2026 1:32pm",
+    "timestamp": "2026-03-25 13:32:48",
+    "download_mbps": 725.17,
+    "upload_mbps": 455.08,
+    "ytdlp_speed_mbps": 112.65,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Windscribe - Canada (best location) 25/3/2026 1:40pm",
+    "timestamp": "2026-03-25 13:40:33",
+    "download_mbps": 348.65,
+    "upload_mbps": 112.44,
+    "ytdlp_speed_mbps": 81.27,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Windscribe - United States Peachtree 25/3/2026 1:45pm",
+    "timestamp": "2026-03-25 13:45:19",
+    "download_mbps": 71.38,
+    "upload_mbps": 17.52,
+    "ytdlp_speed_mbps": 44.83,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "Cloudflare - Singapore 25/3/2026 1:50pm",
+    "timestamp": "2026-03-25 13:50:07",
+    "download_mbps": 208.34,
+    "upload_mbps": 39.21,
+    "ytdlp_speed_mbps": 55.43,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - Mumbai 25/3/2026 2:00pm",
+    "timestamp": "2026-03-25 14:00:42",
+    "download_mbps": 35.82,
+    "upload_mbps": 11.73,
+    "ytdlp_speed_mbps": 67.31,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - United States LA 25/3/2026 2:05pm",
+    "timestamp": "2026-03-25 14:05:18",
+    "download_mbps": 142.67,
+    "upload_mbps": 22.35,
+    "ytdlp_speed_mbps": 110.42,
+    "ytdlp_size_mb": 708.96
+  },
+  {
+    "label": "PrivadoVPN - Canada Montreal 25/3/2026 2:10pm",
+    "timestamp": "2026-03-25 14:10:55",
+    "download_mbps": 46.21,
+    "upload_mbps": 15.88,
+    "ytdlp_speed_mbps": 104.59,
+    "ytdlp_size_mb": 708.96
   }
 ]
