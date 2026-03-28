@@ -147,7 +147,7 @@ Speedtest measures short-burst tunnel capacity to a nearby server. YouTube measu
 | 2 | TunnelBear | 99.01 Mbps | 67.4% | No (2 GB/month) |
 | 3 | PrivadoVPN | 96.16 Mbps | 65.5% | Limited (10 GB/month) |
 | 4 | Windscribe | 68.93 Mbps | 46.9% | Limited (10 GB/month) |
-| 5 | Cloudflare WARP | 41.75 Mbps | 28.4% | Yes, but not a real VPN |
+| 5 | Cloudflare WARP | 41.75 Mbps | 28.4% | Yes (unlimited data) |
 
 ### Key Takeaways
 
